@@ -14,4 +14,9 @@ public partial class MainWindow : Window
 	{
 		ZoomViewer.ZoomToFit();
 	}
+
+	private void Button2_OnClick(object? sender, RoutedEventArgs e)
+	{
+		ZoomViewer.ZoomToActualSize();
+	}
 }

@@ -40,6 +40,11 @@ public sealed class ZoomViewer : ContentControl
 		Zoom = Math.Min(ratio.X, ratio.Y);
 	}
 
+	public void ZoomToActualSize()
+	{
+		Zoom = 1;
+	}
+
 	protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
 	{
 		base.OnApplyTemplate(e);
