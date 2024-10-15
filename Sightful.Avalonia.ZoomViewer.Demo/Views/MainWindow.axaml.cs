@@ -1,6 +1,5 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace Sightful.Avalonia.ZoomViewer.Demo.Views;
 
@@ -11,9 +10,8 @@ public partial class MainWindow : Window
 		InitializeComponent();
 	}
 
-	private static double CalculateZoom(Size contentSize, Size viewSize)
+	private void Button_OnClick(object? sender, RoutedEventArgs e)
 	{
-		var ratio = viewSize / contentSize;
-		return Math.Min(ratio.X, ratio.Y);
+		ZoomViewer.ZoomToFit();
 	}
 }

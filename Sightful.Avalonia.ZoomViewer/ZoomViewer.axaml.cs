@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -31,6 +32,12 @@ public sealed class ZoomViewer : ContentControl
 	{
 		get => GetValue(OffsetProperty);
 		set => SetValue(OffsetProperty, value);
+	}
+
+	public void ZoomToFit()
+	{
+		var ratio = Bounds.Size / Presenter.DesiredSize;
+		Zoom = Math.Min(ratio.X, ratio.Y);
 	}
 
 	protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
