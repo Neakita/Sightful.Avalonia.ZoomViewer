@@ -1,7 +1,6 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 
 namespace Sightful.Avalonia.ZoomViewer.Demo.Views;
 

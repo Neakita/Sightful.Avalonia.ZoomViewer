@@ -8,7 +8,8 @@
     <Style Selector="local|ZoomViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding IsScrollBarsVisible, Converter={x:Static local:Converters.BoolToScrollBarVisibility}}"
+                              VerticalScrollBarVisibility="{TemplateBinding IsScrollBarsVisible, Converter={x:Static local:Converters.BoolToScrollBarVisibility}}">
                     <local:ZoomContentPresenter Zoom="{TemplateBinding Zoom}">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content}"
