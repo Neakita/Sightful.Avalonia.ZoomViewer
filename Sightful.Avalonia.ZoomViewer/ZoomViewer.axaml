@@ -12,6 +12,11 @@
                               VerticalScrollBarVisibility="{TemplateBinding IsScrollBarsVisible, Converter={x:Static local:Converters.BoolToScrollBarVisibility}}"
                               Offset="{TemplateBinding Offset, Mode=TwoWay}">
                     <local:ZoomContentPresenter Zoom="{TemplateBinding Zoom}">
+                        <local:ZoomContentPresenter.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Zoom" Duration="0:0:0.25"/>
+                            </Transitions>
+                        </local:ZoomContentPresenter.Transitions>
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"/>

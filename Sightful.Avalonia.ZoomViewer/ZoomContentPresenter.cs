@@ -66,7 +66,7 @@ public sealed class ZoomContentPresenter : Control
 
 			InvalidateMeasure();
 		}
-		if (change.Property == ZoomProperty)
+		else if (change.Property == ZoomProperty)
 		{
 			_container.RenderTransform = new ImmutableTransform(Matrix.CreateScale(Zoom, Zoom));
 		}
