@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Sightful.Avalonia.ZoomViewer.Demo.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:zoomViewer="clr-namespace:Sightful.Avalonia.ZoomViewer;assembly=Sightful.Avalonia.ZoomViewer"
+        xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+        x:Class="Sightful.Avalonia.ZoomViewer.Demo.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Sightful.Avalonia.ZoomViewer.Demo">
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MaxWidth="300" MinWidth="100"/>
+            <ColumnDefinition Width="8"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox Grid.Column="0" ItemsSource="{Binding Images}"
+                 SelectedItem="{Binding SelectedImage}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <GridSplitter Grid.Column="1" Background="LightGray"/>
+        <DockPanel Grid.Column="2">
+            <StackPanel Orientation="Horizontal"
+                        DockPanel.Dock="Bottom">
+                <Slider Minimum="0.1" Maximum="5" Value="{Binding #ZoomContentPresenter.Zoom}" Width="200"/>
+                <TextBlock Text="{Binding #ZoomContentPresenter.Zoom, StringFormat=P0}"/>
+                <Button Content="{icons:MaterialIconExt FitToScreenOutline}"/>
+            </StackPanel>
+            <zoomViewer:ZoomViewer Name="ZoomContentPresenter">
+                <Image Source="{Binding SelectedImage}" Stretch="None"/>
+            </zoomViewer:ZoomViewer>
+        </DockPanel>
+    </Grid>
+</Window>

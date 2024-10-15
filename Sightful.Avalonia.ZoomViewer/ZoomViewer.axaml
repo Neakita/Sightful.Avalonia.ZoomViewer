@@ -1,0 +1,21 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:Sightful.Avalonia.ZoomViewer">
+    <Design.PreviewWith>
+        <local:ZoomViewer/>
+    </Design.PreviewWith>
+
+    <Style Selector="local|ZoomViewer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <local:ZoomContentPresenter Zoom="{TemplateBinding Zoom}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    </local:ZoomContentPresenter>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
