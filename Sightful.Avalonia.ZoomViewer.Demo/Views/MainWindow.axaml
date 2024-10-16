@@ -30,7 +30,7 @@
         <DockPanel Grid.Column="2">
             <StackPanel Orientation="Horizontal"
                         DockPanel.Dock="Bottom">
-                <Slider Minimum="0.1" Maximum="5" Value="{Binding #ZoomViewer.Zoom}" Width="200"/>
+                <Slider Minimum="{Binding #ZoomViewer.MinimumZoom}" Maximum="5" Value="{Binding #ZoomViewer.Zoom}" Width="200"/>
                 <TextBlock Text="{Binding #ZoomViewer.Zoom, StringFormat=P0}"/>
                 <Button Content="Zoom to fit"
                         Click="Button_OnClick"/>

@@ -9,12 +9,28 @@ namespace Sightful.Avalonia.ZoomViewer;
 
 public sealed class ZoomViewer : ContentControl
 {
-	public static readonly StyledProperty<double> ZoomProperty = ZoomContentPresenter.ZoomProperty.AddOwner<ZoomViewer>();
+	public static readonly StyledProperty<double> ZoomProperty;
+
+	private static double CoerceZoom(AvaloniaObject element, double value)
+	{
+		var zoomViewer = (ZoomViewer)element;
+		return Math.Max(value, zoomViewer.MinimumZoom);
+	}
 
 	public static readonly StyledProperty<bool> IsScrollBarsVisibleProperty =
 		AvaloniaProperty.Register<ZoomViewer, bool>(nameof(IsScrollBarsVisible));
 
 	public static readonly StyledProperty<Vector> OffsetProperty = ScrollViewer.OffsetProperty.AddOwner<ZoomViewer>();
+
+	public static readonly DirectProperty<ZoomViewer, double> MinimumZoomProperty =
+		AvaloniaProperty.RegisterDirect<ZoomViewer, double>(nameof(MinimumZoom), zoomViewer => zoomViewer.MinimumZoom);
+
+	static ZoomViewer()
+	{
+		ZoomProperty = ZoomContentPresenter.ZoomProperty.AddOwner<ZoomViewer>();
+		StyledPropertyMetadata<double> zoomPropertyMetadata = (StyledPropertyMetadata<double>)ZoomProperty.GetMetadata<ZoomViewer>();
+		zoomPropertyMetadata.Merge(new StyledPropertyMetadata<double>(coerce: CoerceZoom), ZoomProperty);
+	}
 
 	public double Zoom
 	{
@@ -33,6 +49,8 @@ public sealed class ZoomViewer : ContentControl
 		get => GetValue(OffsetProperty);
 		set => SetValue(OffsetProperty, value);
 	}
+	
+	public double MinimumZoom { get; private set; }
 
 	public void ZoomToFit()
 	{
@@ -49,10 +67,17 @@ public sealed class ZoomViewer : ContentControl
 	{
 		base.OnApplyTemplate(e);
 		if (_presenter != null)
+		{
 			_presenter.PointerPressed -= OnPresenterPointerPressed;
+			_presenter.SizeChanged -= OnPresenterSizeChanged;
+		}
+
 		_presenter = Presenter;
 		if (_presenter != null)
+		{
 			_presenter.PointerPressed += OnPresenterPointerPressed;
+			_presenter.SizeChanged += OnPresenterSizeChanged;
+		}
 	}
 
 	private ContentPresenter? _presenter;
@@ -79,5 +104,34 @@ public sealed class ZoomViewer : ContentControl
 		var topLevel = TopLevel.GetTopLevel(_presenter);
 		topLevel.PointerMoved -= OnPointerMoved;
 		topLevel.PointerReleased -= OnPointerReleased;
+	}
+
+	private void UpdateMinimumZoom()
+	{
+		var oldValue = MinimumZoom;
+		var newValue = ComputeMinimumZoom();
+		MinimumZoom = newValue;
+		RaisePropertyChanged(MinimumZoomProperty, oldValue, newValue);
+		Zoom = CoerceZoom(this, Zoom);
+	}
+
+	private double ComputeMinimumZoom()
+	{
+		var ratio = Bounds.Size / Presenter.DesiredSize;
+		var result = Math.Min(ratio.X, ratio.Y);
+		if (result > 1)
+			result = 1;
+		return result;
+	}
+
+	protected override void OnSizeChanged(SizeChangedEventArgs e)
+	{
+		base.OnSizeChanged(e);
+		UpdateMinimumZoom();
+	}
+
+	private void OnPresenterSizeChanged(object sender, SizeChangedEventArgs e)
+	{
+		UpdateMinimumZoom();
 	}
 }
