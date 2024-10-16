@@ -14,7 +14,7 @@
                     <local:ZoomContentPresenter Zoom="{TemplateBinding Zoom}">
                         <local:ZoomContentPresenter.Transitions>
                             <Transitions>
-                                <DoubleTransition Property="Zoom" Duration="0:0:0.25"/>
+                                <DoubleTransition Property="Zoom" Duration="0:0:0.25" Easing="CubicEaseOut"/>
                             </Transitions>
                         </local:ZoomContentPresenter.Transitions>
                         <ContentPresenter Name="PART_ContentPresenter"
