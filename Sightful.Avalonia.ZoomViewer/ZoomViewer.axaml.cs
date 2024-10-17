@@ -1,29 +1,45 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 
 namespace Sightful.Avalonia.ZoomViewer;
 
+[TemplatePart("PART_ScrollViewer", typeof(ContentPresenter))]
 public sealed class ZoomViewer : ContentControl
 {
 	public static readonly StyledProperty<double> ZoomProperty = ZoomContentPresenter.ZoomProperty.AddOwner<ZoomViewer>(new StyledPropertyMetadata<double>(coerce: CoerceZoom));
 
-	private static double CoerceZoom(AvaloniaObject element, double value)
-	{
-		var zoomViewer = (ZoomViewer)element;
-		return Math.Max(value, zoomViewer.MinimumZoom);
-	}
-
 	public static readonly StyledProperty<bool> IsScrollBarsVisibleProperty =
 		AvaloniaProperty.Register<ZoomViewer, bool>(nameof(IsScrollBarsVisible));
 
-	public static readonly StyledProperty<Vector> OffsetProperty = ScrollViewer.OffsetProperty.AddOwner<ZoomViewer>();
+	public static readonly StyledProperty<Vector> OffsetProperty = ScrollViewer.OffsetProperty.AddOwner<ZoomViewer>(new StyledPropertyMetadata<Vector>(coerce: CoerceOffset));
 
 	public static readonly DirectProperty<ZoomViewer, double> MinimumZoomProperty =
 		AvaloniaProperty.RegisterDirect<ZoomViewer, double>(nameof(MinimumZoom), zoomViewer => zoomViewer.MinimumZoom);
+
+	private static double CoerceZoom(AvaloniaObject sender, double value)
+	{
+		return Math.Max(value, sender.GetValue(MinimumZoomProperty));
+	}
+
+	private static Vector CoerceOffset(AvaloniaObject sender, Vector value)
+	{
+		var scrollViewer = ((ZoomViewer)sender)._scrollViewer;
+		var extent = scrollViewer.Extent;
+		var viewport = scrollViewer.Viewport;
+		var maxX = Math.Max(extent.Width - viewport.Width, 0);
+		var maxY = Math.Max(extent.Height - viewport.Height, 0);
+		return new Vector(Clamp(value.X, 0, maxX), Clamp(value.Y, 0, maxY));
+	}
+
+	private static double Clamp(double value, double min, double max)
+	{
+		return (value < min) ? min : (value > max) ? max : value;
+	}
 
 	public double Zoom
 	{
@@ -70,9 +86,11 @@ public sealed class ZoomViewer : ContentControl
 			_presenter.PointerPressed += OnPresenterPointerPressed;
 			_presenter.SizeChanged += OnPresenterSizeChanged;
 		}
+		_scrollViewer = e.NameScope.Find<ScrollViewer>("PART_ScrollViewer");
 	}
 
 	private ContentPresenter? _presenter;
+	private ScrollViewer? _scrollViewer;
 	private Point _previousPanPosition;
 
 	private void OnPresenterPointerPressed(object sender, PointerPressedEventArgs e)
