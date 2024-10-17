@@ -11,7 +11,7 @@ public sealed class ZoomContentPresenter : Control
 	public static readonly StyledProperty<Control?> ChildProperty = Decorator.ChildProperty.AddOwner<ZoomContentPresenter>();
 
 	public static readonly StyledProperty<double> ZoomProperty =
-		AvaloniaProperty.Register<ZoomViewer, double>(nameof(Zoom), 1, defaultBindingMode: BindingMode.TwoWay);
+		AvaloniaProperty.Register<ZoomContentPresenter, double>(nameof(Zoom), 1, defaultBindingMode: BindingMode.TwoWay);
 
 	static ZoomContentPresenter()
 	{

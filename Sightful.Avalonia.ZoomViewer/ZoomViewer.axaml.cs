@@ -9,7 +9,7 @@ namespace Sightful.Avalonia.ZoomViewer;
 
 public sealed class ZoomViewer : ContentControl
 {
-	public static readonly StyledProperty<double> ZoomProperty;
+	public static readonly StyledProperty<double> ZoomProperty = ZoomContentPresenter.ZoomProperty.AddOwner<ZoomViewer>(new StyledPropertyMetadata<double>(coerce: CoerceZoom));
 
 	private static double CoerceZoom(AvaloniaObject element, double value)
 	{
@@ -24,13 +24,6 @@ public sealed class ZoomViewer : ContentControl
 
 	public static readonly DirectProperty<ZoomViewer, double> MinimumZoomProperty =
 		AvaloniaProperty.RegisterDirect<ZoomViewer, double>(nameof(MinimumZoom), zoomViewer => zoomViewer.MinimumZoom);
-
-	static ZoomViewer()
-	{
-		ZoomProperty = ZoomContentPresenter.ZoomProperty.AddOwner<ZoomViewer>();
-		StyledPropertyMetadata<double> zoomPropertyMetadata = (StyledPropertyMetadata<double>)ZoomProperty.GetMetadata<ZoomViewer>();
-		zoomPropertyMetadata.Merge(new StyledPropertyMetadata<double>(coerce: CoerceZoom), ZoomProperty);
-	}
 
 	public double Zoom
 	{
