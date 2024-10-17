@@ -55,12 +55,12 @@ public sealed class ZoomViewer : ContentControl
 	public void ZoomToFit()
 	{
 		var ratio = Bounds.Size / Presenter.DesiredSize;
-		Zoom = Math.Min(ratio.X, ratio.Y);
+		SetCurrentValue(ZoomProperty, Math.Min(ratio.X, ratio.Y));
 	}
 
 	public void ZoomToActualSize()
 	{
-		Zoom = 1;
+		SetCurrentValue(ZoomProperty, 1);
 	}
 
 	protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -71,7 +71,6 @@ public sealed class ZoomViewer : ContentControl
 			_presenter.PointerPressed -= OnPresenterPointerPressed;
 			_presenter.SizeChanged -= OnPresenterSizeChanged;
 		}
-
 		_presenter = Presenter;
 		if (_presenter != null)
 		{
@@ -96,7 +95,7 @@ public sealed class ZoomViewer : ContentControl
 		var currentPosition = e.GetPosition(this);
 		var drag = _previousPanPosition - currentPosition;
 		_previousPanPosition = currentPosition;
-		Offset += drag;
+		SetCurrentValue(OffsetProperty, Offset + drag);
 	}
 
 	private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
@@ -112,7 +111,7 @@ public sealed class ZoomViewer : ContentControl
 		var newValue = ComputeMinimumZoom();
 		MinimumZoom = newValue;
 		RaisePropertyChanged(MinimumZoomProperty, oldValue, newValue);
-		Zoom = CoerceZoom(this, Zoom);
+		SetCurrentValue(ZoomProperty, CoerceZoom(this, Zoom));
 	}
 
 	private double ComputeMinimumZoom()
